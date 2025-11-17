@@ -1,0 +1,14 @@
+{
+    "name": "BoxBreaker3D.Data",
+    "rootNamespace": "BoxBreaker3D.Data",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

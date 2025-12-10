@@ -1,0 +1,26 @@
+OVDF v1.0
+BlockBreaker3D.Datas.Component.UnlockWithData, BlockBreaker3D.Datas
+
+# RequiredScore
++ [Sirenix.OdinInspector.ShowIfAttribute]
+	Condition = "NeedScore"
+
+# IsGreatThanOrEqual
++ [Sirenix.OdinInspector.ShowIfAttribute]
+	Condition = "NeedScore"
+
+# RequiredBlocks
++ [Sirenix.OdinInspector.ShowIfAttribute]
+	Condition = "NeedBlocks"
+
+# IsGreatThanOrEqualBlocks
++ [Sirenix.OdinInspector.ShowIfAttribute]
+	Condition = "NeedBlocks"
+
+# CompToAdd
++ [Sirenix.OdinInspector.ShowIfAttribute]
+	Condition = "@ActionOnUnlock==OnUnlockAction.AddCompforParent"
+
+# SignalNameOnUnlock
++ [Sirenix.OdinInspector.ShowIfAttribute]
+	Condition = "@ActionOnUnlock==OnUnlockAction.FireSignal"

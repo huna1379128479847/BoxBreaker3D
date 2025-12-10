@@ -1,0 +1,28 @@
+OVDF v1.0
+BlockBreaker3D.Models.InGame.Balls.BallBehaviour, BlockBreaker3D.Models
+
+# PushUp
+* [Sirenix.OdinInspector.ButtonAttribute]
+	Style = FoldoutButton
+	stretch = False
+	HasDefinedStretch = True
+	Icon = ArrowBarUp
+	buttonIconAlignment = LeftEdge
+	HasDefinedButtonIconAlignment = True
+	DisplayParameters = True
+	DirtyOnClick = True
+	drawResult = False
+	drawResultIsSet = True
+	Expanded = False
+	buttonAlignment = 0.54
+	HasDefinedButtonAlignment = True
+	buttonHeight = 25
+	HasDefinedButtonHeight = True
+	Name = "Push"
+
+# _turningAngle
++ [Sirenix.OdinInspector.WrapAttribute]
+	Max = 360
+
+# _speed
++ [Sirenix.OdinInspector.MinValueAttribute]

@@ -1,0 +1,20 @@
+{
+    "name": "HighElixir.Editor",
+    "rootNamespace": "HighElixir.Editors",
+    "references": [
+        "GUID:3151164fd1f9d9a459a35d877bf09d55",
+        "GUID:cc4602d02a189d2408a9366f01305ae8",
+        "GUID:db8429dbc367a7347aa9ce1a84ddeb6f"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

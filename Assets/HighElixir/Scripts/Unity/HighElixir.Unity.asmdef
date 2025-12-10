@@ -1,0 +1,17 @@
+{
+    "name": "HighElixir.Unity",
+    "rootNamespace": "HighElixir.Unity",
+    "references": [
+        "GUID:f38f8d6027bc17b4cb260304d9470735",
+        "GUID:a3585fec8ad674c4e811e8ee138d424b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

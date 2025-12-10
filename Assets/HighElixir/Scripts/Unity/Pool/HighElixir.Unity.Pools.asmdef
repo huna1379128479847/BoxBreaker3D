@@ -1,0 +1,17 @@
+{
+    "name": "HighElixir.Unity.Pools",
+    "rootNamespace": "",
+    "references": [
+        "GUID:df976389477d6b04596ec8d501056e4c",
+        "GUID:db8429dbc367a7347aa9ce1a84ddeb6f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

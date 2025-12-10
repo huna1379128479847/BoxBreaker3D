@@ -1,0 +1,57 @@
+{
+    "version": 1,
+    "name": "InGame",
+    "maps": [
+        {
+            "name": "InGame",
+            "id": "a70a3587-8eef-410a-86e0-96b07ef83371",
+            "actions": [
+                {
+                    "name": "Turn",
+                    "type": "Value",
+                    "id": "b7b06cb1-8a3c-4e57-b3d4-1e0d4535ea02",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "2D Vector",
+                    "id": "90218417-b85c-443e-ad92-da438b249038",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turn",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "left",
+                    "id": "dc519127-16a0-4456-b00d-3ce092326230",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turn",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "f28cf403-c7fb-4909-8832-fa35cf747720",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turn",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

@@ -1,0 +1,25 @@
+{
+    "name": "BlockBreaker3D.Models",
+    "rootNamespace": "BlockBreaker3D.Models",
+    "references": [
+        "GUID:7a8ef126da28c924e873ae9836fdfb23",
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
+        "GUID:86b56f05d01fb1043a92a99ca53039b5",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:730a75ce3820e6243b07b35774416725",
+        "GUID:a3585fec8ad674c4e811e8ee138d424b",
+        "GUID:f38f8d6027bc17b4cb260304d9470735",
+        "GUID:db8429dbc367a7347aa9ce1a84ddeb6f",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

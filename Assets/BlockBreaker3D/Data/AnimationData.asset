@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3645af28cfa0c104393d9e677c272db3, type: 3}
+  m_Name: AnimationData
+  m_EditorClassIdentifier: 
+  OnSpawn: {fileID: 6470223850953089096, guid: 1e54877675f6e4a46ad7ca7c4d7a5bf6, type: 3}
+  OnDespawn: {fileID: 4021103657954561960, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}

@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa4ad8c317921b4da552b94dc51fe73, type: 3}
   m_Name: UnlockWithData
   m_EditorClassIdentifier: 
-  NeedScore: 1
-  RequiredScore: 1200
-  IsGreatThanOrEqual: 1
-  NeedBlocks: 0
-  RequiredBlocks: 0
-  IsGreatThanOrEqualBlocks: 0
+  UsePredicateString: 1
+  PredicateString: Score >= 800
+  TempValue: 0
   ActionOnUnlock: 1
   CompToAdd: {fileID: 0}
   SignalNameOnUnlock: 

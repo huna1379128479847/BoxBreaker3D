@@ -11,16 +11,11 @@ namespace BlockBreaker3D.View.InGame
         [SerializeField] private TMP_Text _score;
         private Sequence _animSq;
 
-        public override void Enable()
+        public override void Enable(bool enable)
         {
-            base.Enable();
-            _panel.gameObject.SetActive(true);
-        }
-
-        public override void Disable()
-        {
-            base.Disable();
-            _panel.gameObject.SetActive(false);
+            base.Enable(enable);
+            if (_panel != null)
+                _panel.gameObject.SetActive(enable);
         }
 
         public override async UniTask PlayGameOverAnim()
@@ -39,9 +34,9 @@ namespace BlockBreaker3D.View.InGame
 
             // Build animation: pop-in scale with fade-in
             _animSq = DOTween.Sequence();
-            _animSq.Append(_score.rectTransform.DOScale(Vector3.one * 1.2f, 0.40f).SetEase(Ease.OutBack));
-            _animSq.Join(DOTween.To(() => _score.color, x => _score.color = x, new Color(col.r, col.g, col.b, 1f), 0.40f));
-            _animSq.Append(_score.rectTransform.DOScale(Vector3.one, 0.18f).SetEase(Ease.Linear));
+            _ = _animSq.Append(_score.rectTransform.DOScale(Vector3.one * 1.2f, 0.40f).SetEase(Ease.OutBack));
+            _ = _animSq.Join(DOTween.To(() => _score.color, x => _score.color = x, new Color(col.r, col.g, col.b, 1f), 0.40f));
+            _ = _animSq.Append(_score.rectTransform.DOScale(Vector3.one, 0.18f).SetEase(Ease.Linear));
             await _animSq.Play().AsyncWaitForCompletion().AsUniTask();
         }
 
@@ -49,7 +44,7 @@ namespace BlockBreaker3D.View.InGame
         {
             if (_score != null)
             {
-                _score.text = $"Score:{newScore.ToString()}";
+                _score.text = $"Lumen:{newScore.ToString()} lu";
             }
         }
     }

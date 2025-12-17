@@ -37,6 +37,7 @@ namespace BlockBreaker3D.Datas
         // ある面から別の面に移動するときにY軸を反転させる必要があるかどうか
         // X軸版も
         // あとは回転させるかどうか？
+        // SurfaceBehaviour 側でやるべきかもしれない
         private static readonly Dictionary<string, List<string>> _shouldReverseY = new()
         {
             // To, Froms
@@ -63,9 +64,7 @@ namespace BlockBreaker3D.Datas
         public Surface(string name)
         {
             Name = name;
-            var (up, right) = DefaultMove(name);
-            UpVector = up;
-            RightVector = right;
+            (UpVector, RightVector) = DefaultMove(name);
         }
         public override string ToString() => Name;
 
@@ -100,9 +99,7 @@ namespace BlockBreaker3D.Datas
                 var s = func();
                 return (s.UpVector, s.RightVector);
             }
-            // fallback: construct a surface and return its vectors
-            var temp = new Surface(name);
-            return (temp.UpVector, temp.RightVector);
+            return (Vector3.zero, Vector3.zero);
         }
 
         public static (Vector3 up, Vector3 right) DefaultMove(Surface surface)

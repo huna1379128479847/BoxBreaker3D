@@ -6,8 +6,7 @@ namespace BlockBreaker3D.View.InGame
 {
     public interface IGameView : IInitializable
     {
-        void Enable();
-        void Disable();
+        void Enable(bool enable);
         UniTask PlayGameClearAnim();
         UniTask PlayGameOverAnim();
         void UpdateView();
@@ -16,11 +15,10 @@ namespace BlockBreaker3D.View.InGame
 
     public abstract class GameViewBase : MonoBehaviour, IGameView
     {
-        public virtual void Enable()
+        public virtual void Enable(bool enable)
         {
-        }
-        public virtual void Disable()
-        {
+            // Default behavior: toggle GameObject active state
+            gameObject.SetActive(enable);
         }
         public virtual async UniTask PlayGameClearAnim()
         {
@@ -30,6 +28,8 @@ namespace BlockBreaker3D.View.InGame
         {
             await UniTask.CompletedTask;
         }
+
+        // 初期化処理
         public virtual void Initialize()
         {
         }
@@ -37,6 +37,7 @@ namespace BlockBreaker3D.View.InGame
         {
         }
 
+        // リセット時などの状態初期化
         public virtual void InitState()
         {
         }

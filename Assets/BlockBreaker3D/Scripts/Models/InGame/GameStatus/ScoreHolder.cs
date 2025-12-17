@@ -9,9 +9,11 @@ namespace BlockBreaker3D.Models.InGame.GameStatus
     {
         private readonly SignalBus _signalBus;
         private CompositeDisposable _disposable = new();
-        private IntReactiveProperty _scoreProp = new();
+        private readonly IntReactiveProperty _scoreProp = new();
+        private readonly IntReactiveProperty _destroyedBlock = new(); // 破壊したブロック数
         public bool IsEnabled { get; set; } = true;
         public IReactiveProperty<int> Score => _scoreProp;
+        public IReactiveProperty<int> DestroyedBlock => _destroyedBlock;
 
         public ScoreHolder(SignalBus signalBus)
         {
@@ -35,6 +37,10 @@ namespace BlockBreaker3D.Models.InGame.GameStatus
             _signalBus.GetStream<GameSignal>()
                 .Subscribe(s =>
                 {
+                    if (s.Has(GameSignal.Type.DestroyedBlock))
+                    {
+                        _destroyedBlock.Value += 1;
+                    }
                     if (s.HasAny(GameSignal.Type.GameOver, GameSignal.Type.GameClear))
                     {
                         IsEnabled = false;

@@ -2,6 +2,7 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace BlockBreaker3D.View.InGame
 {
@@ -21,21 +22,24 @@ namespace BlockBreaker3D.View.InGame
             {
                 _scoreText = GetComponent<TMP_Text>();
             }
-            _scoreText.text = $"Score: {newScore}";
+            _scoreText.text = $"Lumen: {newScore}lu";
         }
 
         public override async UniTask PlayGameClearAnim()
         {
-            _sequence.Join(gameObject.transform.DOMove(_clearedPosition.position, _clearAnimationDuration).SetEase(_clearAnimationEase));
-            _sequence.Join(gameObject.transform.DOScale(Vector3.one * _clearAnimationScale, _clearAnimationDuration).SetEase(_clearAnimationEase));
-            await _sequence.Play().AsyncWaitForCompletion().AsUniTask();
+            _ = _sequence.Join(gameObject.transform.DOMove(_clearedPosition.position, _clearAnimationDuration).SetEase(_clearAnimationEase));
+            _ = _sequence.Join(gameObject.transform.DOScale(Vector3.one * _clearAnimationScale, _clearAnimationDuration).SetEase(_clearAnimationEase));
+            await _sequence.Play();
         }
 
+        [Inject]
         public override void Initialize()
         {
             _scoreText = GetComponent<TMP_Text>();
             if (_sequence.IsActive())
                 _sequence.Kill();
+            _sequence = DOTween.Sequence();
+            _initialPosition = gameObject.transform.position;
         }
 
         public override void InitState()
@@ -43,18 +47,10 @@ namespace BlockBreaker3D.View.InGame
             gameObject.transform.position = _initialPosition;
         }
 
-        public override void Enable()
+        public override void Enable(bool enable)
         {
-            _scoreText.gameObject.SetActive(true);
-        }
-        public override void Disable()
-        {
-            _scoreText.gameObject.SetActive(false);
-        }
-        private void Awake()
-        {
-            _sequence = DOTween.Sequence();
-            _initialPosition = gameObject.transform.position;
+            if (_scoreText != null)
+                _scoreText.gameObject.SetActive(enable);
         }
     }
 }

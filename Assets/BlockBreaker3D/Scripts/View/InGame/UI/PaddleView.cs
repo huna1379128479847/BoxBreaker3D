@@ -44,6 +44,7 @@ namespace BlockBreaker3D.View.InGame
             _sq.Play();
         }
 
+        // Note: signature matches new IGameView Enable(bool) pattern when this is used as a view
         public void Enable(bool enable)
         {
             _left.gameObject.SetActive(enable);

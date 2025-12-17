@@ -7,6 +7,7 @@ using UnityEngine.Pool;
 
 namespace BlockBreaker3D.View.InGame
 {
+    // ターン予測線を表示するビュー
     public class TurnView : GameViewBase
     {
         [SerializeField] private TMP_Text _turnText;
@@ -22,17 +23,21 @@ namespace BlockBreaker3D.View.InGame
         [SerializeField] private ColorData _rightLineColor;
         [BoxGroup("Effect")]
         [SerializeField] private ParticleSystem _lineEffect;
+        [BoxGroup("Effect")]
+        [SerializeField] private float _effectDuration = 1.0f;
         private ObjectPool<ParticleSystem> _effectPool;
 
+        [SerializeField] private bool _enabled = true;
         public void UpdateAngle(Vector3 leftAngle, Vector3 rightAngle, Vector3 originalPos)
         {
+            if (!_enabled) return;
             var leftDir = Quaternion.Euler(leftAngle) * Vector3.forward;
             var rightDir = Quaternion.Euler(rightAngle) * Vector3.forward;
 
             var leftEnd = originalPos + leftDir.normalized * _length;
             var rightEnd = originalPos + rightDir.normalized * _length;
 
-            if (_leftLine != null)
+            if (_leftLine != null && _leftLine.gameObject.activeInHierarchy)
             {
                 _leftLine.positionCount = 2;
                 _leftLine.colorGradient = _lineColor.gradient;
@@ -40,7 +45,7 @@ namespace BlockBreaker3D.View.InGame
                 _leftLine.SetPosition(1, leftEnd);
             }
 
-            if (_rightLine != null)
+            if (_rightLine != null && _rightLine.gameObject.activeInHierarchy)
             {
                 _rightLine.positionCount = 2;
                 _rightLine.colorGradient = _rightLineColor.gradient;
@@ -49,30 +54,49 @@ namespace BlockBreaker3D.View.InGame
             }
         }
 
+        // 左右のラインの表示・非表示を切り替え
+        // 左右どちらか一方のみ表示する場合に使用
+        // Enable(false) 時は無視される
+        public void Enable_Left(bool enable)
+        {
+            if (_enabled)
+                _leftLine.enabled = enable;
+        }
+
+        public void Enable_Right(bool enable)
+        {
+            if (_enabled)
+                _rightLine.enabled = enable;
+        }
+
         public void SpawnEffect(bool isRight)
         {
             // TODO : lineの向きに合わせてエフェクトを回転させる
+            if (_effectPool == null) InitPool();
             var effect = _effectPool.Get();
             if (isRight)
             {
-                if (_rightLine != null)
+                if (_rightLine != null && _rightLine.positionCount > 0)
                 {
                     effect.transform.position = _rightLine.GetPosition(0);
                     effect.transform.rotation = Quaternion.LookRotation(_rightLine.GetPosition(1) - _rightLine.GetPosition(0));
                 }
+                else return; // 表示されていない場合はエフェクトも出さない
             }
             else
             {
-                if (_leftLine != null)
+                if (_leftLine != null && _leftLine.positionCount > 0)
                 {
                     effect.transform.position = _leftLine.GetPosition(0);
                     effect.transform.rotation = Quaternion.LookRotation(_leftLine.GetPosition(1) - _leftLine.GetPosition(0));
                 }
+                else return; // 表示されていない場合はエフェクトも出さない
             }
             UniTask.Create(async () =>
             {
                 effect.Play();
-                await UniTask.Delay(System.TimeSpan.FromSeconds(1.0f));
+                var d = effect.main.loop ? _effectDuration : effect.main.duration;
+                await UniTask.Delay(System.TimeSpan.FromSeconds(d));
                 _effectPool.Release(effect);
             }).Forget();
         }
@@ -93,15 +117,22 @@ namespace BlockBreaker3D.View.InGame
                 _turnText.SetText(text);
         }
 
-        public void SetActive(bool isActive)
+        // Implement IGameView style enable/disable
+        public override void Enable(bool enable)
         {
-            gameObject.SetActive(isActive);
-            _turnText?.gameObject.SetActive(isActive);
-            _leftLine.enabled = isActive;
-            _rightLine.enabled = isActive;
+            base.Enable(enable);
+            _turnText?.gameObject.SetActive(enable);
+            _enabled = enable;
+            if (_leftLine != null) _leftLine.enabled = enable;
+            if (_rightLine != null) _rightLine.enabled = enable;
         }
 
         private void Awake()
+        {
+            if (_effectPool == null) InitPool();
+        }
+
+        private void InitPool()
         {
             _effectPool = new ObjectPool<ParticleSystem>(() =>
             {
@@ -123,7 +154,6 @@ namespace BlockBreaker3D.View.InGame
             },
             false, 10, 100);
         }
-
         private void OnDestroy()
         {
             if (_leftLine != null)

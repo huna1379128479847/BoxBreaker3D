@@ -3,7 +3,8 @@
     "rootNamespace": "BlockBreaker3D.Datas",
     "references": [
         "GUID:db8429dbc367a7347aa9ce1a84ddeb6f",
-        "GUID:7a8ef126da28c924e873ae9836fdfb23"
+        "GUID:7a8ef126da28c924e873ae9836fdfb23",
+        "GUID:f38f8d6027bc17b4cb260304d9470735"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

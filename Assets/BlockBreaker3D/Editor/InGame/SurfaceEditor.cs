@@ -1,4 +1,5 @@
 ﻿using BlockBreaker3D.Datas;
+using BlockBreaker3D.Datas.Scriptable;
 using BlockBreaker3D.Models;
 using UnityEditor;
 using UnityEngine;
@@ -13,16 +14,16 @@ namespace BlockBreaker3D.Editor
         private SerializedProperty _surfaceType;
         private SerializedProperty _surfaceOrigin;
         private SerializedProperty _spawnPos;
-        private SerializedProperty _blockRemainTextPos;
+        private static StepData _data;
 
         private void OnEnable()
         {
+            _data ??= AssetDatabase.LoadAssetAtPath<StepData>(StepData.PATH);
             _surface = (SurfaceBehaviour)target;
             _surfaceSize = serializedObject.FindProperty("_size");
             _surfaceType = serializedObject.FindProperty("_surfaceType");
             _surfaceOrigin = serializedObject.FindProperty("_surfaceOriginPos");
             _spawnPos = serializedObject.FindProperty("_spawnPos");
-            _blockRemainTextPos = serializedObject.FindProperty("_blockRemainTextPos");
         }
 
         private void OnSceneGUI()
@@ -34,14 +35,25 @@ namespace BlockBreaker3D.Editor
             var (up, right) = Surface.DefaultMove(_surfaceType.stringValue);
             // Use the configured surface origin instead of the transform position
             var origin = _surfaceOrigin.vector3Value;
-
+            if (!IsValid(up, right))
+            {
+                // 無効な場合は警告表示のみ
+                Handles.Label(origin, "Surface Up/Right Vectors are invalid!");
+                return;
+            }
             // Handle to move the surface origin
             EditorGUI.BeginChangeCheck();
+            
+            // 原点になるポジション
             var newOrigin = Handles.PositionHandle(origin, Quaternion.identity);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_surface, "Move Surface Origin");
-                _surfaceOrigin.vector3Value = newOrigin;
+                var rounded = newOrigin;
+                rounded.x = Mathf.Ceil(newOrigin.x / _data.HalfStep) * _data.HalfStep;
+                rounded.y = Mathf.Ceil(newOrigin.y / _data.HalfStep) * _data.HalfStep;
+                rounded.z = Mathf.Ceil(newOrigin.z / _data.HalfStep) * _data.HalfStep;
+                _surfaceOrigin.vector3Value = rounded;
                 origin = newOrigin;
             }
 
@@ -79,26 +91,12 @@ namespace BlockBreaker3D.Editor
                 var local = newTopRight - origin;
                 var newX = Vector3.Dot(local, right);
                 var newY = Vector3.Dot(local, up);
+                newX = Mathf.Ceil(newX / _data.HalfStep) * _data.HalfStep;
+                newY = Mathf.Ceil(newY / _data.HalfStep) * _data.HalfStep;
                 // Ensure sizes are positive
                 newX = Mathf.Max(0f, newX);
                 newY = Mathf.Max(0f, newY);
                 _surfaceSize.vector2Value = new Vector2(newX, newY);
-            }
-
-            // Block remain text position handle (yellow circle)
-            var text2D = _blockRemainTextPos.vector2Value;
-            var textWorld = origin + right * text2D.x + up * text2D.y;
-            Handles.color = Color.yellow;
-            EditorGUI.BeginChangeCheck();
-            // FreeMoveHandle returns new position after dragging; constrain to plane by projecting to basis
-            var fmh_94_66_639010066713347153 = Quaternion.identity; var newTextWorld = Handles.FreeMoveHandle(textWorld, 0.25f, Vector3.zero, Handles.CircleHandleCap);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(_surface, "Move Block Remain Text");
-                var local = newTextWorld - origin;
-                float x = Vector3.Dot(local, right);
-                float y = Vector3.Dot(local, up);
-                _blockRemainTextPos.vector2Value = new Vector2(x, y);
             }
 
             // ここまでの変更を反映
@@ -122,6 +120,13 @@ namespace BlockBreaker3D.Editor
             Handles.DrawLine(p1, p2);
             Handles.DrawLine(p2, p3);
             Handles.DrawLine(p3, p0);
+        }
+
+        private bool IsValid(Vector3 up, Vector3 right)
+        {
+            if (up == Vector3.zero) return false;
+            if (right == Vector3.zero) return false;
+            return true;
         }
     }
 }

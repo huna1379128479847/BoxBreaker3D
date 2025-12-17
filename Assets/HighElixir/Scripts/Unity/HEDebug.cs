@@ -16,7 +16,7 @@ namespace HighElixir
                 Debug.Assert(false, message);
                 UnityEngine.Debug.LogError(message);
             }
-            return condition;
+            return !condition;
 #else
             return condition;
 #endif

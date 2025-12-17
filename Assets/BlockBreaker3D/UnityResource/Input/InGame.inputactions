@@ -51,6 +51,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Tutor",
+            "id": "8f8f0736-4677-4511-b809-7c5f8bc26518",
+            "actions": [
+                {
+                    "name": "Space",
+                    "type": "Button",
+                    "id": "8f3a50cf-6b72-4d88-a881-ed161830c404",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d4c44f69-b64a-436d-b8fe-81da0db0ecc0",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Space",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_GUID: fa8750dcc65ee844e9913c6f87948252
+  m_SerializeEntries:
+  - m_GUID: 51abda6f585ac7f4db71241982140abd
+    m_Address: Map/Parts/Cube1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 580e4a48bbdb1014997b451547f39869
+    m_Address: Data/Sounds/SE/crash
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 643e9b2fd8fd256418f9dcb3a7ef0b56
+    m_Address: Map/Parts/Number1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83948a4b7438e4f41aefba2a4c88c3ff
+    m_Address: Data/Sounds/BGM/stage_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0a9a22334c9470498afc77c8132850a
+    m_Address: Shader/Noise/NoiseMat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c57b299b76fda4f4fa41b6d03d242d4e
+    m_Address: Shader/Glitch/Glitch_mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e208dec47aad5f14f8ea5caa8720c473
+    m_Address: Map/Parts/Wall1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc2cbb4f3b4f24d40863d81d5e04e2d4
+    m_Address: Shader/MonoChrome/Mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: c040d1e286b1d2b46915e50a694c87a2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: d6981b2dd85dcb544a27967dc1792a31, type: 2}
+    - {fileID: 11400000, guid: 7bcc2925b6c278e4b88827b0bfc7e352, type: 2}

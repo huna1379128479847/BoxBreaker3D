@@ -9,18 +9,19 @@ namespace HighElixir.Unity.Addressable.SceneManagement.Internal
     internal static class SceneStack
     {
         private static ConcurrentDictionary<Scene, SceneInstance> _scenes = new();
-        private static ConcurrentDictionary<AssetReference, SceneInstance> _assetToScene = new();
-        private static ConcurrentDictionary<SceneInstance, AssetReference> _sceneToAsset = new();
-        private static ConcurrentStack<AssetReference> _sceneStack = new();
-        private static AssetReference _currentScene = null;
+        private static ConcurrentDictionary<string, SceneInstance> _assetToScene = new();
+        private static ConcurrentDictionary<SceneInstance, string> _sceneToAsset = new();
+        private static ConcurrentStack<SceneInstance> _sceneStack = new();
+        private static SceneInstance _currentScene = Invalid;
 
-        public static AssetReference CurrentScene => _currentScene;
+        public static SceneInstance CurrentScene => _currentScene;
 
-        public static void RegisterScene(SceneInstance scene, AssetReference reference)
+        private static readonly SceneInstance Invalid = default;
+        public static void RegisterScene(SceneInstance scene, string key)
         {
             _scenes.TryAdd(scene.Scene, scene);
-            _assetToScene.TryAdd(reference, scene);
-            _sceneToAsset.TryAdd(scene, reference);
+            _assetToScene.TryAdd(key, scene);
+            _sceneToAsset.TryAdd(scene, key);
         }
 
         public static void UnregisterScene(SceneInstance scene)
@@ -30,9 +31,9 @@ namespace HighElixir.Unity.Addressable.SceneManagement.Internal
                 _assetToScene.TryRemove(r, out _);
         }
 
-        public static void UnregisterScene(AssetReference reference)
+        public static void UnregisterScene(string key)
         {
-            if (_assetToScene.TryGetValue(reference, out var scene))
+            if (_assetToScene.TryGetValue(key, out var scene))
                 UnregisterScene(scene);
         }
         public static SceneInstance GetScene(Scene scene)
@@ -48,7 +49,7 @@ namespace HighElixir.Unity.Addressable.SceneManagement.Internal
             return _scenes.TryGetValue(scene, out instance);
         }
 
-        public static bool TryGetScene(AssetReference scene, out SceneInstance instance)
+        public static bool TryGetScene(string scene, out SceneInstance instance)
         {
             return _assetToScene.TryGetValue(scene, out instance);
         }
@@ -67,16 +68,16 @@ namespace HighElixir.Unity.Addressable.SceneManagement.Internal
 
         #region 前のシーンに戻るなどの処理
 
-        public static void Push(AssetReference scene)
+        public static void Push(SceneInstance scene)
         {
-            if (_currentScene != null)
+            if (!_scenes.Equals(Invalid))
             {
                 _sceneStack.Push(_currentScene);
             }
             _currentScene = scene;
         }
 
-        public static bool TryPop(out AssetReference reference)
+        public static bool TryPop(out SceneInstance reference)
         {
             if (_sceneStack.TryPop(out reference))
             {
@@ -92,7 +93,7 @@ namespace HighElixir.Unity.Addressable.SceneManagement.Internal
         {
             _scenes.Clear();
             _sceneStack.Clear();
-            _currentScene = null;
+            _currentScene = Invalid;
         }
 
     }

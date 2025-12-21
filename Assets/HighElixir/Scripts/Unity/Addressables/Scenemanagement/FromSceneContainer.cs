@@ -7,17 +7,12 @@ namespace HighElixir.Unity.Addressable.SceneManagement
     public readonly struct FromSceneContainer
     {
         public readonly string[] Args;
-        public readonly AssetReference SceneReference;
+        public readonly SceneInstance Instance;
 
-        public FromSceneContainer(AssetReference sceneReference, params string[] args)
+        public FromSceneContainer(SceneInstance scene, params string[] args)
         {
-            this.SceneReference = sceneReference;
+            this.Instance = scene;
             this.Args = args;
-        }
-
-        public bool TryGetInst(out SceneInstance instance)
-        {
-            return SceneStack.TryGetScene(SceneReference, out instance);
         }
     }
 }

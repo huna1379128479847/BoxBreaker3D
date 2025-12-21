@@ -14,18 +14,26 @@ namespace HighElixir.Unity.Addressable.SceneManagement.Internal
 {
     internal static class SceneLoaderAsyncInternal
     {
-        internal static async Task<SceneInstance> SceneLoaderAsync(AssetReference sceneReference, FromSceneContainer container, bool autoUnload, bool notify, float currentReport = 0f, float maxReport = 1f, CancellationToken token = default, IProgress<float> progress = null)
+        // autoActivateがfalseの場合、autoUnload, notifyは無視される
+        internal static async Task<SceneInstance> SceneLoaderAsync(string key, FromSceneContainer container, bool autoActivate, bool autoUnload, bool notify, float currentReport = 0f, float maxReport = 1f, CancellationToken token = default, IProgress<float> progress = null)
         {
-            var inst = await GetProgress(Addressables.LoadSceneAsync(sceneReference, LoadSceneMode.Additive), currentReport, maxReport, token, progress);
-            SceneStack.RegisterScene(inst, sceneReference);
+            var scene = SceneManager.GetActiveScene();
+            var inst = await GetProgress(Addressables.LoadSceneAsync(key, LoadSceneMode.Additive), currentReport, maxReport, token, progress);
+            SceneStack.RegisterScene(inst, key);
             if (token.IsCancellationRequested)
                 throw new TaskCanceledException();
-            var from = SceneStack.GetCurrentSceneInstance();
+            var flg = SceneStack.TryGetCurrentSceneInstance(out var from);
+            SceneStack.Push(inst);
+            if (!autoActivate)
+                return inst;
             await inst.ActivateAsync();
-            SceneStack.Push(sceneReference);
             if (autoUnload)
             {
-                await SceneManageHelper.UnloadSceneAsync(from);
+                if (flg)
+                    await SceneManageHelper.UnloadSceneAsync(from);
+                else
+                    // Stackに登録されていないため、現在のアクティブシーンをアンロードする
+                    await SceneManager.UnloadSceneAsync(scene);
             }
             if (notify)
                 UnityThread.Post(() => SearchAndNotify(inst.Scene, container));

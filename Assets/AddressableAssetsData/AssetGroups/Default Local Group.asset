@@ -15,8 +15,18 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: fa8750dcc65ee844e9913c6f87948252
   m_SerializeEntries:
+  - m_GUID: 2310e5cfce948694cb0ab5ca3f507f6c
+    m_Address: Data/Sounds/BGM/prism
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 51abda6f585ac7f4db71241982140abd
     m_Address: Map/Parts/Cube1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55f2ec61a74fcd641bf2eb9ac8437374
+    m_Address: Data/Sounds/BGM/to-light
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -30,8 +40,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c7d0f8215945db42873c46cf39cbde9
+    m_Address: Data/Sounds/BGM/untitled
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 83948a4b7438e4f41aefba2a4c88c3ff
     m_Address: Data/Sounds/BGM/stage_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8935ee1ae31352b4bbe348ead3ff6b88
+    m_Address: Scene/Stage1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1887e279590669419824fdfc61cbac1
+    m_Address: Scene/Title
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -42,6 +67,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c57b299b76fda4f4fa41b6d03d242d4e
     m_Address: Shader/Glitch/Glitch_mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d97a4ea2f5463c54ebaf9f4833cb0669
+    m_Address: Data/Sounds/BGM/reconnection
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

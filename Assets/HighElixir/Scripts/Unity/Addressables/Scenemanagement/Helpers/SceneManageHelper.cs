@@ -13,6 +13,8 @@ namespace HighElixir.Unity.Addressable.SceneManagement.Helpers
         {
             if (SceneStack.TryGetScene(scene, out var inst))
                await UnloadSceneAsync(inst);
+            else
+               await SceneManager.UnloadSceneAsync(scene);
         }
         public static async Task UnloadSceneAsync(SceneInstance scene)
         {

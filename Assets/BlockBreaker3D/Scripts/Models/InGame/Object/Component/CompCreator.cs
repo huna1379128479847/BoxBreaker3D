@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BlockBreaker3D.Datas.Component;
@@ -9,8 +8,11 @@ namespace BlockBreaker3D.Models.InGame.Component
 {
     public static class CompCreator
     {
-        private readonly static ConcurrentDictionary<Type, Func<CompData, GameDataHolder, IObject, Comp>> _cache = new();
-        public static Comp Create(CompData data, GameDataHolder holder, IObject parent)
+        private readonly static ConcurrentDictionary<Type, Func<CompData, Comp>> _cache = new();
+
+        // リフレクションを使って CompData から Comp インスタンスを生成する
+        // 名前空間をまたいで CompInfo クラスを探すため、型名だけではなくフルネームでも検索を試みる
+        public static Comp Create(CompData data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
 
@@ -21,7 +23,7 @@ namespace BlockBreaker3D.Models.InGame.Component
 
             if (_cache.TryGetValue(type, out var func))
             {
-                return func(data, holder, parent);
+                return func(data);
             }
 
             var method = type.GetMethod(
@@ -30,12 +32,12 @@ namespace BlockBreaker3D.Models.InGame.Component
                 throw new MissingMethodException(
                     $"Create method not found on type {type.FullName}. Expected signature: static Comp Create(CompData, GameDataHolder, IObject)");
 
-            var del = (Func<CompData, GameDataHolder, IObject, Comp>)
-                Delegate.CreateDelegate(typeof(Func<CompData, GameDataHolder, IObject, Comp>), method);
+            var del = (Func<CompData, Comp>)
+                Delegate.CreateDelegate(typeof(Func<CompData, Comp>), method);
 
             _cache[type] = del;
 
-            return del(data, holder, parent);
+            return del(data);
         }
 
 
@@ -46,7 +48,7 @@ namespace BlockBreaker3D.Models.InGame.Component
             // 1. そのまま型名として探す
             var type = Type.GetType(className, false, true);
 
-            // 2. 見つからなければ "Comp" の付け外しを試す
+            // 2. 見つからなければ "CompInfo" の付け外しを試す
             if (type == null)
             {
                 var name = className;

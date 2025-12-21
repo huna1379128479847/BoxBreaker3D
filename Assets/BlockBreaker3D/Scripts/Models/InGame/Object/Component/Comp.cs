@@ -6,7 +6,7 @@ using UnityEngine;
 namespace BlockBreaker3D.Models.InGame.Component
 {
     /* Example
-    public static Comp Create(CompData data, GameDataHolder holder, IObject parent)
+    public static Comp Create(CompData data)
     {
           if (data is DamageData damage)
             {
@@ -21,7 +21,7 @@ namespace BlockBreaker3D.Models.InGame.Component
     /// </summary>
     /// <remarks>
     /// 必ず以下のstaticメソッドを実装する必要がある
-    /// static Comp Create(CompData data, GameDataHolder holder, IObject parent)
+    /// static Comp Create(CompData data)
     /// </remarks>
 #if UNITY_EDITOR
     [Serializable]
@@ -87,30 +87,30 @@ namespace BlockBreaker3D.Models.InGame.Component
         /// <summary>
         /// 追加時の初期化処理
         /// </summary>
-        public virtual void OnStart() { }
+        public virtual void OnStart(IObject parent, GameDataHolder dataHolder) { }
 
         /// <summary>
         /// 毎フレーム毎の更新処理
         /// </summary>
         /// <param name="deltaTime"></param>
-        public virtual void OnUpdate(float deltaTime) { }
+        public virtual void OnUpdate(IObject parent, GameDataHolder dataHolder, float deltaTime) { }
 
         /// <summary>
         /// このコンポーネントが削除される際の処理
         /// </summary>
-        public virtual void OnRemove() { }
+        public virtual void OnRemove(IObject parent) { }
         /// <summary>
         /// 親オブジェクトが破壊される際の処理
         /// </summary>
-        public virtual void OnDestroyObj() { }
+        public virtual void OnDestroyObj(IObject parent) { }
 
         /// <summary>
         /// 衝突通知受信時の処理
         /// </summary>
         /// <param name="objectType"></param>
-        public virtual void NotifyCollider(Collider other, ObjectType objectType) { }
-        public virtual void NotifyCollision(Collision collision, ObjectType objectType) { }
-        public virtual void Reset() { }
+        public virtual void NotifyCollider(Collider other, IObject otherObject) { }
+        public virtual void NotifyCollision(Collision collision, IObject otherObject) { }
+        public virtual void Reset(IObject parent, GameDataHolder dataHolder) { }
 #if UNITY_EDITOR
         public virtual void OnDrawGizmos(Transform parentTransform) { }
 #endif

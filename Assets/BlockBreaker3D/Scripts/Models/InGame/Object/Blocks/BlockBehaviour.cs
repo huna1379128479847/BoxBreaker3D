@@ -89,7 +89,7 @@ namespace BlockBreaker3D.Models.InGame.Blocks
             gameObject.SetActive(false);
             foreach (var comp in _comps)
             {
-                comp.OnDestroyObj();
+                comp.OnDestroyObj(this);
             }
             _cache.NotyfyBreaked();
         }
@@ -136,9 +136,8 @@ namespace BlockBreaker3D.Models.InGame.Blocks
             }
         }
 
-        protected override void Start()
+        protected override void PostInitialize()
         {
-            base.Start();
             _cache ??= GetComponentInParent<SurfaceBehaviour>();
             _cache.RegisterBlock(this);
         }

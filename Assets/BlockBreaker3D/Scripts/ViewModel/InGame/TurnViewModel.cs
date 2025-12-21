@@ -16,7 +16,7 @@ namespace BlockBreaker3D.ViewModel
         private readonly TurnView _turnView;
         private readonly TurnHandler _turnHandler;
 
-        public override SetViewVisible.ViewType ViewType => SetViewVisible.ViewType.TurnHandView;
+        public override SetViewVisible.ViewType ViewType => SetViewVisible.ViewType.TurnHandleView;
 
         [Inject]
         public TurnViewModel(
@@ -82,6 +82,7 @@ namespace BlockBreaker3D.ViewModel
             var leftEuler = Quaternion.FromToRotation(Vector3.forward, leftWorld).eulerAngles;
             var rightEuler = Quaternion.FromToRotation(Vector3.forward, rightWorld).eulerAngles;
 
+            
             _turnView.UpdateAngle(
                 leftEuler,
                 rightEuler,

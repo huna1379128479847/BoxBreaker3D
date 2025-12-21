@@ -82,11 +82,11 @@ namespace BlockBreaker3D.Models.InGame.Balls
             if (mover != null)
                 _compDatas.Add(mover);
             else
-                AddCompAsStartMember(new BallMover(this));
+                AddCompAsStartMember(new BallMover());
             if (collisionHandler != null)
                 _compDatas.Add(collisionHandler);
             else
-                AddCompAsStartMember(new BallCollisionHandler(signalBus, this));
+                AddCompAsStartMember(new BallCollisionHandler());
 
             holder.BindBall(this);
             _stateManager = gameStateManager;

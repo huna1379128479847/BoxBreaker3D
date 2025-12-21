@@ -10,14 +10,14 @@ namespace BlockBreaker3D.Models.InGame.Component
         bool IsEnableDuplicate { get; }
         bool InitialComp { get; set; }
 
-        void OnStart();
-        void OnUpdate(float deltaTime);
-        void OnRemove();
-        void OnDestroyObj();
+        void OnStart(IObject parent, GameDataHolder dataHolder);
+        void OnUpdate(IObject parent, GameDataHolder dataHolder, float deltaTime);
+        void OnRemove(IObject parent);
+        void OnDestroyObj(IObject parent);
 
-        void NotifyCollider(Collider other, ObjectType objectType);
-        void NotifyCollision(Collision collision, ObjectType objectType);
-        void Reset();
+        void NotifyCollider(Collider other, IObject otherObject);
+        void NotifyCollision(Collision collision, IObject otherObject);
+        void Reset(IObject parent, GameDataHolder dataHolder);
 
 #if UNITY_EDITOR
         void OnDrawGizmos(Transform parentTransform);

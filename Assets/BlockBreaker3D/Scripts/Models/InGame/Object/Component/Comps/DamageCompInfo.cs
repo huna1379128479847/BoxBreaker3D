@@ -10,45 +10,43 @@ namespace BlockBreaker3D.Models.InGame.Component
     {
         [SerializeField]
         private int _value;
-        private readonly GameDataHolder _gameDataHolder;
-        private readonly IObject _parent;
-        public DamageCompInfo(DamageData data, GameDataHolder gameDataHolder, IObject parent)
+        private GameDataHolder _gameDataHolder;
+        public DamageCompInfo(DamageData data)
             : base(data)
         {
             _value = data.Value;
-            _gameDataHolder = gameDataHolder;
-            _parent = parent;
         }
 
-        public override void OnStart()
+        public override void OnStart(IObject parent, GameDataHolder dataHolder)
         {
-            _parent.SetObjectType(_parent.ObjectType | ObjectType.Damage);
+            parent.SetObjectType(parent.ObjectType | ObjectType.Damage);
+            _gameDataHolder = dataHolder;
         }
-        public override void NotifyCollider(Collider _, ObjectType objectType)
+        public override void NotifyCollider(Collider _, IObject otherObject)
         {
-            if (objectType == ObjectType.Ball)
+            if (otherObject.ObjectType.HasAny(ObjectType.Ball))
             {
                 _gameDataHolder.BallBehaviour.TakeDamage(_value);
             }
         }
-        public override void NotifyCollision(Collision _, ObjectType objectType)
+        public override void NotifyCollision(Collision _, IObject otherObject)
         {
-            if (objectType == ObjectType.Ball)
+            if (otherObject.ObjectType.HasAny(ObjectType.Ball))
             {
                 _gameDataHolder.BallBehaviour.TakeDamage(_value);
             }
         }
 
-        public override void OnRemove()
+        public override void OnRemove(IObject parent)
         {
-            _parent.SetObjectType(_parent.ObjectType & ~ObjectType.Damage);
+            parent.SetObjectType(parent.ObjectType & ~ObjectType.Damage);
         }
 
-        public static Comp Create(CompData data, GameDataHolder holder, IObject parent)
+        public static Comp Create(CompData data)
         {
             if (data is DamageData damage)
             {
-                return new DamageCompInfo(damage, holder, parent);
+                return new DamageCompInfo(damage);
             }
             throw new System.Exception("Invalid CompData type for DamageComp");
         }

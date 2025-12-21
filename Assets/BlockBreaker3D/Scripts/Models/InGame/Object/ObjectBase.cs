@@ -1,7 +1,9 @@
 ﻿using BlockBreaker3D.Core;
 using BlockBreaker3D.Datas;
 using BlockBreaker3D.Datas.Component;
+using BlockBreaker3D.Datas.Signals;
 using BlockBreaker3D.Models.InGame.Component;
+using BlockBreaker3D.Utils;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ using Zenject;
 
 namespace BlockBreaker3D.Models.InGame
 {
-    public abstract class ObjectBase : MonoBehaviour, IObject, IInitializable
+    public abstract class ObjectBase : MonoBehaviour, IObject
     {
         [BoxGroup("Object Properties"), Space(5)]
         [SerializeField, EnumButtons]
@@ -35,7 +37,7 @@ namespace BlockBreaker3D.Models.InGame
                 }
                 else
                 {
-                    comp.Reset();
+                    comp.Reset(this, _holder);
                 }
             }
             CheckRemove();
@@ -43,6 +45,11 @@ namespace BlockBreaker3D.Models.InGame
 
         protected abstract void OnReset();
 
+        public void FireMessage(string message)
+        {
+            if (_holder != null)
+                _holder.SignalBus.Fire(new Message(message));
+        }
         #region Comp Management
         [BoxGroup("Comps")]
         [SerializeField] protected List<CompData> _compDatas = new();
@@ -53,37 +60,37 @@ namespace BlockBreaker3D.Models.InGame
 #endif
         protected List<IComp> _comps = new();
 
-        public void AddComp(IComp comp)
-            => AddCompInternal(comp, true);
+        public void AddComp(IComp comp, bool callOnStart = true)
+            => AddCompInternal(comp, callOnStart);
 
-        public void AddCompAsStartMember(IComp comp)
+        public void AddCompAsStartMember(IComp comp, bool callOnStart = true)
         {
             comp.InitialComp = true;
-            AddCompInternal(comp, false);
+            AddCompInternal(comp, callOnStart);
         }
-        private void AddCompInternal(IComp comp, bool callOnStart = true)
+        private void AddCompInternal(IComp comp, bool callOnStart)
         {
             if (!comp.IsEnableDuplicate)
             {
                 var id = _comps.FindIndex(c => c.Type == comp.Type);
                 if (id != -1)
                 {
-                    _comps[id].OnRemove();
+                    _comps[id].OnRemove(this);
                     _comps[id] = comp;
                     if (callOnStart)
-                        comp.OnStart();
+                        comp.OnStart(this, _holder);
                     return;
                 }
             }
             _comps.Add(comp);
             if (callOnStart)
-                comp.OnStart();
+                comp.OnStart(this, _holder);
         }
 
 
         public void RemoveComp(IComp comp)
         {
-            comp.OnRemove();
+            comp.OnRemove(this);
             _comps.Remove(comp);
         }
 
@@ -118,7 +125,7 @@ namespace BlockBreaker3D.Models.InGame
             {
                 if (_comps[i].ShouldbeRemoved)
                 {
-                    _comps[i].OnRemove();
+                    _comps[i].OnRemove(this);
                     _comps.RemoveAt(i);
                 }
             }
@@ -140,42 +147,13 @@ namespace BlockBreaker3D.Models.InGame
 
         #region Unity Methods
 
-        // Runtime initialization: create comps defined in _compDatas and call their OnStart
-        protected virtual void Start()
-        {
-            // It's expected that SetGameDataHolder has been injected by Zenject before Start is called.
-            if (_holder == null)
-            {
-                Debug.LogWarning($"[{name}] GameDataHolder is not set. Components may not initialize correctly.");
-            }
-
-            foreach (var compData in _compDatas)
-            {
-                try
-                {
-                    var comp = CompCreator.Create(compData, _holder, this);
-                    comp.InitialComp = true;
-                    AddCompInternal(comp, false);
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError($"[{name}] Failed to create component: {compData.ClassName}\n{ex}");
-                }
-            }
-            foreach (var comp in _comps)
-            {
-                comp.OnStart();
-            }
-            CheckRemove();
-        }
-
         private void FixedUpdate()
         {
             var deltaTime = Time.fixedDeltaTime * GameTimeScale.RelativeTimeScale();
             NotifyFixedUpdate(deltaTime);
             foreach (var comp in _comps)
             {
-                comp.OnUpdate(deltaTime);
+                comp.OnUpdate(this, _holder, deltaTime);
             }
             CheckRemove();
         }
@@ -192,7 +170,7 @@ namespace BlockBreaker3D.Models.InGame
                 NotifyTriggerEnter(other, otherObj.ObjectType);
                 foreach (var comp in _comps)
                 {
-                    comp.NotifyCollider(other, otherObj.ObjectType);
+                    comp.NotifyCollider(other, otherObj);
                 }
                 CheckRemove();
             }
@@ -210,7 +188,7 @@ namespace BlockBreaker3D.Models.InGame
                 NotifyCollisionEnter(collision, otherObj.ObjectType);
                 foreach (var comp in _comps)
                 {
-                    comp.NotifyCollision(collision, otherObj.ObjectType);
+                    comp.NotifyCollision(collision, otherObj);
                 }
                 CheckRemove();
             }
@@ -225,10 +203,46 @@ namespace BlockBreaker3D.Models.InGame
             if (_comps == null) return;
             foreach (var comp in _comps)
             {
-                comp.OnRemove();
+                comp.OnRemove(this);
                 comp.ShouldbeRemoved = true;
             }
             CheckRemove();
+        }
+
+        public void Initialize()
+        {
+            //BDebug.Log($"[{name}] Initialize called.", BDebug.BColor.green);
+            if (_holder == null)
+            {
+                Debug.LogError($"[{name}] GameDataHolder is not set. Please ensure it is injected via SetGameDataHolder before Start.");
+
+                return;
+            }
+            //Debug.Log($"[{name}] starting Initialize");
+            foreach (var compData in _compDatas)
+            {
+                try
+                {
+                    var comp = CompCreator.Create(compData);
+                    comp.InitialComp = true;
+                    AddCompInternal(comp, false);
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogError($"[{name}] Failed to create component: {compData.ClassName}\n{ex}");
+                }
+            }
+            foreach (var comp in _comps)
+            {
+                comp.OnStart(this, _holder);
+            }
+            CheckRemove();
+            PostInitialize();
+        }
+
+        protected virtual void PostInitialize()
+        {
+            // 初期化後の追加処理が必要な場合はオーバーライドして実装
         }
 #if UNITY_EDITOR
         protected virtual void OnDrawGizmos()
@@ -243,34 +257,6 @@ namespace BlockBreaker3D.Models.InGame
             }
         }
 
-        public void Initialize()
-        {
-            if (_holder == null)
-            {
-                Debug.LogError($"[{name}] GameDataHolder is not set. Please ensure it is injected via SetGameDataHolder before Start.");
-
-                return;
-            }
-            //Debug.Log($"[{name}] starting Initialize");
-            foreach (var compData in _compDatas)
-            {
-                try
-                {
-                    var comp = CompCreator.Create(compData, _holder, this);
-                    comp.InitialComp = true;
-                    AddCompInternal(comp, false);
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError($"[{name}] Failed to create component: {compData.ClassName}\n{ex}");
-                }
-            }
-            foreach (var comp in _comps)
-            {
-                comp.OnStart();
-            }
-            CheckRemove();
-        }
 #endif
         #endregion
     }

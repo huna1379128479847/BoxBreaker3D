@@ -29,14 +29,10 @@ namespace BlockBreaker3D.Models.Utils
         /// PredicateString を評価する Func<bool> を生成する。
         /// GetScore/GetBlock は「この関数を生成した瞬間」からの差分。
         /// </summary>
-        public static Func<bool> CompilePredicate(this GameDataHolder holder, IObject parent, string pre)
+        public static Func<GameDataHolder, IObject, (int baseScore, int baseBlocks), bool> CompilePredicate(string pre)
         {
             if (string.IsNullOrWhiteSpace(pre))
-                return () => true;
-
-            // ★ベースラインをここでキャプチャ
-            var baseScore = holder.ScoreHolder.Score?.Value ?? 0;
-            var baseBlock = holder.ScoreHolder.DestroyedBlock?.Value ?? 0;
+                return (_, __, ___) => true;
 
             // 1. トークナイズ
             var tokens = Tokenize(pre);
@@ -45,7 +41,7 @@ namespace BlockBreaker3D.Models.Utils
             var rpn = ToRpn(tokens);
 
             // 3. RPN を評価する Func<bool> を返す（ベースラインを閉じ込める）
-            return () => EvaluateRpn(rpn, holder, parent, baseScore, baseBlock);
+            return (holder, obj, b) => EvaluateRpn(rpn, holder, obj, b.baseScore, b.baseBlocks);
         }
 
         //=====================

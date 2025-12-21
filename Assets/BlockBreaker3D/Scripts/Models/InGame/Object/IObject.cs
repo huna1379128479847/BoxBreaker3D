@@ -11,7 +11,8 @@ namespace BlockBreaker3D.Models.InGame
         IObject SurfaceObject { get; set; }
         void SetObjectType(ObjectType objectType);
         void ResetState();
-        void AddComp(IComp comp);
+        void AddComp(IComp comp, bool callOnStart = true);
+        void AddCompAsStartMember(IComp comp, bool callOnStart = true);
 
         /// <remarks>
         /// Comp継承クラス内から呼ばないこと。
@@ -25,5 +26,9 @@ namespace BlockBreaker3D.Models.InGame
         void MarkCompsForRemoval<T>() where T : IComp;
         IEnumerable<T> GetComps<T>() where T : IComp;
         T GetComp<T>() where T : IComp;
+
+        void FireMessage(string message);
+
+        void Initialize();
     }
 }

@@ -9,16 +9,25 @@ namespace BlockBreaker3D.Models.InGame.Component.GameObjectComp
     {
         public class ReceiveMessage : Comp
         {
-            private SignalBus _signalBus;
             private string _messageKey;
-            public ReceiveMessage(SignalBus bus, string message) : base(true)
+            private GameObject _parent;
+            public ReceiveMessage(string message) : base(true)
             {
-                _signalBus = bus;
                 _messageKey = message;
             }
-            public override void OnStart()
+            public override void OnStart(IObject parent, GameDataHolder holder)
             {
-                _signalBus.GetStream<Message>()
+                Debug.Log($"[ReceiveMessage] OnStart: Subscribing to message '{_messageKey}'.");
+                if (parent is ObjectBase @base)
+                {
+                    _parent = @base.gameObject;
+                }
+                else
+                {
+                    Debug.LogError("[ReceiveMessage] OnStart: Parent is not ObjectBase.");
+                    return;
+                }
+                holder.SignalBus.GetStream<Message>()
                     .Where(x => x.Text == _messageKey)
                     .Subscribe(OnReceiveMessage);
             }
@@ -27,22 +36,19 @@ namespace BlockBreaker3D.Models.InGame.Component.GameObjectComp
             {
                 if (message.Text == _messageKey)
                 {
-                    // 仮で親オブジェクトの有効化だけ
-                    
+                    Debug.Log($"[ReceiveMessage] Received message: {message.Text}, activating GameObject.");
+                    _parent.SetActive(true);
                 }
             }
         }
 
         [SerializeField]
         private string _messageKey;
-        private SignalBus _bus;
 
-        
-        [Inject]
-        public void Construct(SignalBus bus) => _bus = bus;
         public override Comp Create()
         {
-            return new ReceiveMessage(_bus, _messageKey);
+            Debug.Log($"[ReceiveMessageGO] Creating ReceiveMessage Comp with key '{_messageKey}'.");
+            return new ReceiveMessage(_messageKey);
         }
     }
 }

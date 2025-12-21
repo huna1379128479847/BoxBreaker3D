@@ -14,15 +14,10 @@ namespace BlockBreaker3D.Models.InGame.Wall
             // 何もしない
         }
 
-        [Inject]
-        protected void Initialize()
+        protected override void PostInitialize()
         {
             _surface = GetComponentInParent<SurfaceBehaviour>();
             _box = GetComponentInParent<BoxBehaviour>();
-        }
-        protected override void Start()
-        {
-            base.Start();
             if (_addWallOnStart)
             {
                 SetObjectType(ObjectType | Datas.ObjectType.Wall);

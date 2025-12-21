@@ -10,7 +10,8 @@ namespace BlockBreaker3D.Datas.Signals
             None = 0,
             ScoreView = 1 << 0,
             LivesView = 1 << 1,
-            TurnHandView = 1 << 2,
+            TurnHandleView = 1 << 2,
+
         }
         public ViewType View;
         public bool IsVisible;

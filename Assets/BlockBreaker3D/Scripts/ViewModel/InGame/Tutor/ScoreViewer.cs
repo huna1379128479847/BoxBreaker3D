@@ -17,7 +17,7 @@ namespace BlockBreaker3D.ViewModel.Tutor
                 .Where(message => message.Text == "ShowScore")
                 .Subscribe(_ =>
                 {
-                    bus.Fire(new SetViewVisible(SetViewVisible.ViewType.ScoreView | SetViewVisible.ViewType.LivesView | SetViewVisible.ViewType.TurnHandView, true, false));
+                    bus.Fire(new SetViewVisible(SetViewVisible.ViewType.ScoreView | SetViewVisible.ViewType.LivesView | SetViewVisible.ViewType.TurnHandleView, true, false));
                     bus.Fire(SetInputEnable.SetTurn(true));
                     PostProcesses.Fade(PostProcesses.ProcessType.Glitch, 1f, 0f, 1.5f, DG.Tweening.Ease.OutSine).Forget();
                 });

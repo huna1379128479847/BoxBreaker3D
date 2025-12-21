@@ -55,8 +55,8 @@ namespace BlockBreaker3D.Models.InGame.Utils
             }
             ReadCache();
             // グリッドの位置とサイズから実際の位置とスケールを計算して適用
-            float x = _positionGrid.x * _cache.HalfStep;
-            float y = _positionGrid.y * _cache.HalfStep;
+            float x = _positionGrid.x * _cache.QuarterStep;
+            float y = _positionGrid.y * _cache.QuarterStep;
             _position = new Vector2(x, y);
 
             float scaleX = (_sizeGrid.x >= 1 ? _sizeGrid.x : 1) * _cache.Step;
@@ -83,7 +83,7 @@ namespace BlockBreaker3D.Models.InGame.Utils
             }
 
             ReadCache();
-
+            Undo.RecordObjects(positioners, "Step Reset"); // Undo対応
             foreach (var p in positioners)
             {
                 if (p == null || p._surface == null)
@@ -102,8 +102,8 @@ namespace BlockBreaker3D.Models.InGame.Utils
 
                 // local2D は「HalfStep単位の実距離」なので、HalfStepで割ってグリッドへ
                 p.PositionGrid = new Vector2Int(
-                    Mathf.RoundToInt(local2D.x / _cache.HalfStep),
-                    Mathf.RoundToInt(local2D.y / _cache.HalfStep)
+                    Mathf.RoundToInt(local2D.x / _cache.QuarterStep),
+                    Mathf.RoundToInt(local2D.y / _cache.QuarterStep)
                 );
 
                 // サイズは Step単位

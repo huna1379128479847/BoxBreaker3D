@@ -13,10 +13,10 @@ namespace BlockBreaker3D.Models.InGame.Component
     public class UnlockedWith : Comp
     {
 
-        private readonly Func<bool> _predicate;
+        private readonly Func<GameDataHolder, IObject, (int baseScore, int baseBlocks), bool> _predicate;
         private readonly UnlockWithData _config;
-        private readonly GameDataHolder _holder;
-        private readonly IObject _parent;
+        private int _baseScore;
+        private int _baseBlocks;
 
         private bool _isUnlocked;
         private bool _actionExecuted;
@@ -24,24 +24,24 @@ namespace BlockBreaker3D.Models.InGame.Component
         /// <summary>このインスタンスの条件が満たされているかどうか</summary>
         public bool IsUnlocked => _isUnlocked;
 
-        public UnlockedWith(
-            Func<bool> predicate,
-            UnlockWithData config,
-            GameDataHolder holder,
-            IObject parent
-        ) : base(true) // 複製可
+        public UnlockedWith(Func<GameDataHolder, IObject, (int baseScore, int baseBlocks), bool> func, UnlockWithData config) : base(true) // 複製可
         {
-            _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            _holder = holder ?? throw new ArgumentNullException(nameof(holder));
-            _parent = parent ?? throw new ArgumentNullException(nameof(parent));
+            _config = config;
+            _predicate = func;
         }
-        public override void OnUpdate(float deltaTime)
+
+        public override void OnStart(IObject parent, GameDataHolder dataHolder)
+        {
+            // ベース値の取得
+            _baseScore = dataHolder.ScoreHolder.Score.Value;
+            _baseBlocks = dataHolder.BoxBehaviour.Value.GetTotalBlockCount();
+        }
+        public override void OnUpdate(IObject parent, GameDataHolder holder, float deltaTime)
         {
             if (_isUnlocked) return;
 
             // 自分の条件がまだ満たされていない → 評価する
-            if (!_predicate())
+            if (!_predicate(holder, parent, (_baseScore, _baseBlocks)))
                 return;
 
             // 条件達成
@@ -51,14 +51,14 @@ namespace BlockBreaker3D.Models.InGame.Component
             if (!_actionExecuted)
             {
                 _actionExecuted = true;
-                ExecuteUnlockAction();
+                ExecuteUnlockAction(parent, holder);
             }
         }
 
         /// <summary>
         /// Unlock 完了時のアクションを実行
         /// </summary>
-        private void ExecuteUnlockAction()
+        private void ExecuteUnlockAction(IObject parent, GameDataHolder holder)
         {
             switch (_config.ActionOnUnlock)
             {
@@ -67,36 +67,36 @@ namespace BlockBreaker3D.Models.InGame.Component
                     break;
 
                 case UnlockWithData.OnUnlockAction.DisableParent:
-                    DisableParentObject();
+                    DisableParentObject(parent);
                     break;
 
                 case UnlockWithData.OnUnlockAction.FireSignal:
-                    FireSignalOnUnlock();
+                    FireSignalOnUnlock(holder);
                     break;
 
                 case UnlockWithData.OnUnlockAction.AddCompforParent:
-                    AddCompToParent();
+                    AddCompToParent(parent);
                     break;
             }
         }
 
-        private void DisableParentObject()
+        private void DisableParentObject(IObject p)
         {
-            if (_parent is ObjectBase b)
+            if (p is ObjectBase b)
                 b.gameObject.SetActive(false);
         }
 
-        private void FireSignalOnUnlock()
+        private void FireSignalOnUnlock(GameDataHolder g)
         {
             if (string.IsNullOrEmpty(_config.SignalNameOnUnlock))
             {
                 Debug.LogWarning("[UnlockedWith] FireSignal: SignalNameOnUnlock is null or empty.");
                 return;
             }
-            _holder.SignalBus.Fire(new Message(_config.SignalNameOnUnlock));
+            g.SignalBus.Fire(new Message(_config.SignalNameOnUnlock));
         }
 
-        private void AddCompToParent()
+        private void AddCompToParent(IObject p)
         {
             if (_config.CompToAdd == null)
             {
@@ -107,8 +107,8 @@ namespace BlockBreaker3D.Models.InGame.Component
             try
             {
                 // CompCreator を使って Comp を生成し、親に追加
-                var comp = CompCreator.Create(_config.CompToAdd, _holder, _parent);
-                _parent.AddComp(comp);
+                var comp = CompCreator.Create(_config.CompToAdd);
+                p.AddComp(comp);
             }
             catch (Exception ex)
             {
@@ -120,7 +120,7 @@ namespace BlockBreaker3D.Models.InGame.Component
         /// <summary>
         /// CompCreator から呼ばれるファクトリメソッド
         /// </summary>
-        public static Comp Create(CompData data, GameDataHolder holder, IObject parent)
+        public static Comp Create(CompData data)
         {
             if (data is not UnlockWithData d)
             {
@@ -129,24 +129,21 @@ namespace BlockBreaker3D.Models.InGame.Component
                     $"Expected {nameof(UnlockWithData)}, but got {data.GetType().Name ?? "null"}.");
             }
 
-            if (holder == null) throw new ArgumentNullException(nameof(holder));
-            if (parent == null) throw new ArgumentNullException(nameof(parent));
-
-            Func<bool> predicate = null;
+            Func<GameDataHolder, IObject, (int baseScore, int baseBlocks), bool> predicate = null;
 
             if (!PredicateBuilder.IsValid(d.PredicateString))
             {
                 Debug.LogError(
                     $"[UnlockedWith] Invalid predicate string: '{d.PredicateString}'. " +
                     "Ensure the syntax is correct.");
-                predicate = () => true;
+                predicate = (_, __, ___) => true;
             }
             else
             {
-                predicate = holder.CompilePredicate(parent, d.PredicateString);
+                predicate = PredicateCompiler.CompilePredicate(d.PredicateString);
             }
 
-            return new UnlockedWith(predicate, d, holder, parent);
+            return new UnlockedWith(predicate, d);
         }
     }
 }

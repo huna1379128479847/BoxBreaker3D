@@ -102,7 +102,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4
+  m_text: "<color=green>\u2611</color>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bbd8a03c4e0a6c74db2ea422d56165b5, type: 2}
   m_sharedMaterial: {fileID: 21787498236480076, guid: c1fe470c24d703a46af8b363646ea230, type: 2}

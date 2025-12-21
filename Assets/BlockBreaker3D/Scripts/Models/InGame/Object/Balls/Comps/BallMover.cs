@@ -18,18 +18,17 @@ namespace BlockBreaker3D.Models.InGame.Balls
         private Transform _transform;
         private Rigidbody _rigidbody;
 
-        public BallMover(BallBehaviour ball) : base(false)
+        public BallMover() : base(false) { }
+
+        public override void OnStart(IObject parent, GameDataHolder dataHolder)
         {
-            _ball = ball;
-            _transform = ball.transform;
-            _rigidbody = ball.GetComponent<Rigidbody>();
-        }
-        public void Bind(BallBehaviour ball)
-        {
-            _ball = ball;
-            _transform = ball.transform;
-            _rigidbody = ball.GetComponent<Rigidbody>();
-            Debug.Log("BallMover bound to BallBehaviour.");
+            if (parent is BallBehaviour ball)
+            {
+                _ball = ball;
+                _transform = ball.transform;
+                _rigidbody = ball.GetComponent<Rigidbody>();
+                Debug.Log("BallMover bound to BallBehaviour.");
+            }
         }
 
         public void Reflect()
@@ -42,7 +41,7 @@ namespace BlockBreaker3D.Models.InGame.Balls
             Debug.Log("BallMover.Reflect: direction inverted.");
         }
 
-        public override void OnUpdate(float deltaTime)
+        public override void OnUpdate(IObject parent, GameDataHolder holder, float deltaTime)
         {
             if (_ball == null) return;
             _rigidbody.MovePosition(GetNextPosition(deltaTime));
@@ -54,17 +53,13 @@ namespace BlockBreaker3D.Models.InGame.Balls
             var tuple = Surface.DefaultMove(_ball.CurrentSurface);
             var up = _ball.Direction.y * tuple.up;
             var right = _ball.Direction.x * tuple.right;
-            var moveVector =  _ball.Speed * (up + right);
+            var moveVector = _ball.Speed * (up + right);
             return _transform.position + moveVector * deltaTime;
         }
 
-        public static Comp Create(CompData _, GameDataHolder unuse, IObject parent)
+        public static Comp Create(CompData _)
         {
-            if (parent is BallBehaviour ball)
-            {
-                return new BallMover(ball);
-            }
-            throw new System.Exception("Invalid CompData type for DamageComp");
+            return new BallMover();
         }
     }
 }

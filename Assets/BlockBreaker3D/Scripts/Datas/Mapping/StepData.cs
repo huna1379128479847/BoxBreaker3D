@@ -7,16 +7,10 @@
     {
         public const string PATH = "Assets/BlockBreaker3D/Data/StepData.asset";
         [SerializeField] private float _step = 0.5f;
-        [SerializeField, ReadOnly] private float _halfStep = 0.25f;
 
         public float Step => _step;
-        public float HalfStep => _halfStep;
+        public float HalfStep => _step / 2f;
+        public float QuarterStep => HalfStep / 2f;
 
-        private void OnValidate()
-        {
-            // Ensure half step is always half of step
-            _halfStep = _step / 2f;
-
-        }
     }
 }

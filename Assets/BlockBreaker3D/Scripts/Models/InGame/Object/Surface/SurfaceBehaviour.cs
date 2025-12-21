@@ -17,63 +17,99 @@ namespace BlockBreaker3D.Models
 {
     public class SurfaceBehaviour : ObjectBase
     {
+        #region === Surface Basic Settings ===
+        [BoxGroup("Basic")]
         [SerializeField] private string _surfaceType;
+
+        [BoxGroup("Basic")]
         [SerializeField] private Vector3 _surfaceOriginPos;
+
+        [BoxGroup("Basic")]
         [SerializeField] private Vector2 _size;
-        [SerializeField] private Vector2 _spawnPos;
-        [SerializeField] private Vector2 _pushOnSpawn;
+
+        [BoxGroup("Basic")]
         [SerializeField] private Vector3 _camRotate;
-        [SerializeField] private bool _enableSlowMotion = true;
+        #endregion
 
-        [BoxGroup("Surface Transient"), Space(10)]
-        [FoldoutGroup("Surface Transient/Top")]
-        [Tooltip("面の上から出るときの遷移先サーフェスタイプ")]
-        [SerializeField] private string _exitOnTopToSurfaceType;
-        [BoxGroup("Surface Transient")]
-        [FoldoutGroup("Surface Transient/Top")]
-        [Tooltip("面の上から出るときに何度ボールのDirectionを回転させるかどうか")]
-        [SerializeField] private float _rotateOnExitFromTop;
+        #region === Spawn & Initial Force ===
+        [BoxGroup("Spawn")]
+        [SerializeField] private Vector2 _spawnPos;
 
-        [BoxGroup("Surface Transient")]
-        [FoldoutGroup("Surface Transient/Bottom")]
-        [Tooltip("面の下から出るときの遷移先サーフェスタイプ")]
-        [SerializeField] private string _exitOnBottomToSurfaceType;
-        [BoxGroup("Surface Transient")]
-        [FoldoutGroup("Surface Transient/Bottom")]
-        [Tooltip("面の上から出るときに何度ボールのDirectionを回転させるかどうか")]
-        [SerializeField] private float _rotateOnExitFromBottom;
+        [BoxGroup("Spawn")]
+        [SerializeField] private Vector2 _pushOnSpawn;
+        #endregion
 
-        [BoxGroup("Surface Transient")]
-        [FoldoutGroup("Surface Transient/Left")]
-        [Tooltip("面の左から出るときの遷移先サーフェスタイプ")]
-        [SerializeField] private string _exitOnLeftToSurfaceType;
-        [BoxGroup("Surface Transient")]
-        [FoldoutGroup("Surface Transient/Left")]
-        [Tooltip("面の上から出るときに何度ボールのDirectionを回転させるかどうか")]
-        [SerializeField] private float _rotateOnExitFromLeft;
+        #region === Gameplay Options ===
+        [BoxGroup("Gameplay")]
+        [SerializeField]
+        [Tooltip("ブロック全破壊時にスローモーションを有効にするか")]
+        private bool _enableSlowMotion = true;
+        #endregion
 
-        [BoxGroup("Surface Transient")]
-        [FoldoutGroup("Surface Transient/Right")]
-        [Tooltip("面の右から出るときの遷移先サーフェスタイプ")]
-        [SerializeField] private string _exitOnRightToSurfaceType;
-        [BoxGroup("Surface Transient")]
-        [FoldoutGroup("Surface Transient/Right")]
-        [Tooltip("面の上から出るときに何度ボールのDirectionを回転させるかどうか")]
-        [SerializeField] private float _rotateOnExitFromRight;
+        #region === Transition ===
+        // Exit 系をまとめて「閉じれる」ようにする
+        [BoxGroup("Transition"), FoldoutGroup("Transition/Exit")]
+        [SerializeField, Tooltip("上方向に出たときの遷移先サーフェスタイプ")]
+        private string _exitOnTopToSurfaceType;
 
-        [BoxGroup("GUI"), Space(10)]
+        [BoxGroup("Transition"), FoldoutGroup("Transition/Exit")]
+        [SerializeField, Tooltip("上方向に出たときに何度ボールのDirectionを回転させるかどうか")]
+        private float _rotateOnExitFromTop;
+
+        [BoxGroup("Transition"), FoldoutGroup("Transition/Exit")]
+        [SerializeField, Tooltip("下方向に出たときの遷移先サーフェスタイプ")]
+        private string _exitOnBottomToSurfaceType;
+
+        [BoxGroup("Transition"), FoldoutGroup("Transition/Exit")]
+        [SerializeField, Tooltip("下方向に出たときに何度ボールのDirectionを回転させるかどうか")]
+        private float _rotateOnExitFromBottom;
+
+        [BoxGroup("Transition"), FoldoutGroup("Transition/Exit")]
+        [SerializeField, Tooltip("左方向に出たときの遷移先サーフェスタイプ")]
+        private string _exitOnLeftToSurfaceType;
+
+        [BoxGroup("Transition"), FoldoutGroup("Transition/Exit")]
+        [SerializeField, Tooltip("左方向に出たときに何度ボールのDirectionを回転させるかどうか")]
+        private float _rotateOnExitFromLeft;
+
+        [BoxGroup("Transition"), FoldoutGroup("Transition/Exit")]
+        [SerializeField, Tooltip("右方向に出たときの遷移先サーフェスタイプ")]
+        private string _exitOnRightToSurfaceType;
+
+        [BoxGroup("Transition"), FoldoutGroup("Transition/Exit")]
+        [SerializeField, Tooltip("右方向に出たときに何度ボールのDirectionを回転させるかどうか")]
+        private float _rotateOnExitFromRight;
+        #endregion
+
+        #region === GUI ===
+        [BoxGroup("GUI")]
         [SerializeField, Tooltip("ブロック残りの表示用Text")]
         private TMP_Text _blockRemainText;
 
-        // Injected / runtime
+        [BoxGroup("GUI")]
+        [SerializeField, Tooltip("ボールがこのサーフェスに存在する場合にのみ表示")]
+        private bool _onlyViewToSurface;
+        #endregion
+
+        #region === Runtime / Injected ===
+        [BoxGroup("Runtime"), ReadOnly]
         private SignalBus _signalBus;
+
 #if UNITY_EDITOR
-        [SerializeField, Tooltip("シリアライズはエディターでしか動作しません")]
+        [BoxGroup("Runtime"), SerializeField, Tooltip("シリアライズはエディターでしか動作しません")]
 #endif
         private BallBehaviour _ballBehaviour;
+
+        [BoxGroup("Runtime"), ReadOnly]
         internal BoxBehaviour _boxBehaviour;
+
+        [BoxGroup("Runtime"), ReadOnly]
         private readonly List<BlockBehaviour> _blocks = new();
+
+        [BoxGroup("Runtime"), ReadOnly]
         private readonly ReactiveProperty<Vector2> _ballLocalPosition = new(Vector2.zero);
+        #endregion
+
 
         #region Properties
         public string SurfaceType => _surfaceType;
@@ -100,6 +136,7 @@ namespace BlockBreaker3D.Models
         {
             _signalBus = sig;
             SurfaceData = new Surface(_surfaceType);
+
             // Instantiate block remain text if a prefab/reference is provided
             if (_blockRemainText != null)
             {
@@ -142,8 +179,18 @@ namespace BlockBreaker3D.Models
         private void UpdateBlockRemainText()
         {
             if (_blockRemainText == null) return;
+
+            if (_onlyViewToSurface && _ballBehaviour == null)
+            {
+                _blockRemainText.gameObject.SetActive(false);
+                return;
+            }
+            else
+            {
+                _blockRemainText.gameObject.SetActive(true);
+            }
+
             var rm = GetBlockCount();
-            //Debug.Log($"[{name}.Surface] UpdateBlockRemainText: {rm}");
             if (rm == 0)
             {
                 _blockRemainText.text = "<color=green>☑</color>";
@@ -211,6 +258,7 @@ namespace BlockBreaker3D.Models
             if (_ballBehaviour == null) return;
             var worldPos = _ballBehaviour.transform.position;
             var local = SurfaceWorldToLocal(worldPos);
+
             // Calculate inset based on ball radius (prefer radius + small margin over configured inset)
             var sphere = _ballBehaviour.GetComponent<SphereCollider>();
             float radius = 0f;
@@ -221,6 +269,7 @@ namespace BlockBreaker3D.Models
                     _ballBehaviour.transform.lossyScale.y,
                     _ballBehaviour.transform.lossyScale.z);
             }
+
             const float epsilon = 0.2f;
             float inset = Mathf.Max(_boxBehaviour.TransitionInset, radius + epsilon);
 
@@ -228,6 +277,7 @@ namespace BlockBreaker3D.Models
                 Mathf.Clamp(local.x, 0f + inset, Size.x - inset),
                 Mathf.Clamp(local.y, 0f + inset, Size.y - inset)
             );
+
             var newWorld = SurfaceLocalToWorld(clamped);
             _ballBehaviour.transform.position = newWorld;
         }
@@ -237,14 +287,17 @@ namespace BlockBreaker3D.Models
             _ballBehaviour = ballBehaviour;
             _ballBehaviour.SurfaceObject = this;
             _ballBehaviour.CurrentSurface = SurfaceData;
+
             foreach (var block in _blocks)
             {
                 block.ResetMaterial();
             }
+
             _ballLocalPosition.Subscribe(pos =>
             {
                 // pos is in surface-local coordinates (X = right, Y = up) where (0,0) corresponds to SurfaceOrigin
                 if (!SurfaceData.IsOutside(pos, _size)) return;
+
                 var side = SurfaceData.GetExitSide(pos, _size);
                 switch (side)
                 {
@@ -252,18 +305,22 @@ namespace BlockBreaker3D.Models
                         if (!_boxBehaviour.Transition(_exitOnRightToSurfaceType, _rotateOnExitFromRight))
                             ClampTo();
                         break;
+
                     case Surface.ExitSide.Left:
                         if (!_boxBehaviour.Transition(_exitOnLeftToSurfaceType, _rotateOnExitFromLeft))
                             ClampTo();
                         break;
+
                     case Surface.ExitSide.Top:
                         if (!_boxBehaviour.Transition(_exitOnTopToSurfaceType, _rotateOnExitFromTop))
                             ClampTo();
                         break;
+
                     case Surface.ExitSide.Bottom:
                         if (!_boxBehaviour.Transition(_exitOnBottomToSurfaceType, _rotateOnExitFromBottom))
                             ClampTo();
                         break;
+
                     case Surface.ExitSide.None:
                     default:
                         break;

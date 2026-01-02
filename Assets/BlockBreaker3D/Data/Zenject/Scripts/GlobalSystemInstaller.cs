@@ -9,7 +9,6 @@ namespace BlockBreaker3D.Zenject
         {
             // Bind IResourceLoader to AudioLoader as a singleton
             Container.Bind<Models.Sounds.AudioLoader>().AsSingle();
-            Container.Bind<Models.Resource.SceneLoader>().AsSingle().NonLazy();
         }
     }
 }

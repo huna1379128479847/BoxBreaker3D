@@ -1,6 +1,8 @@
 ﻿using BlockBreaker3D.Datas;
 using BlockBreaker3D.Datas.Scriptable;
+using BlockBreaker3D.Utils;
 using Sirenix.OdinInspector;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -29,6 +31,7 @@ namespace BlockBreaker3D.Models.InGame.Utils
 
         private void OnValidate()
         {
+            if (PrefabUtility.IsPartOfPrefabAsset(gameObject)) return;
             if (_autoPerformOnValidate)
             {
                 PerformPositioning();
@@ -50,7 +53,18 @@ namespace BlockBreaker3D.Models.InGame.Utils
         {
             if (_targetObject == null || _surface == null)
             {
-                Debug.LogWarning("TargetObject or Surface is not assigned.");
+                StringBuilder sb = new();
+                if (_targetObject == null)
+                {
+                    sb.Append("TargetObject");
+                }
+                if (_surface == null)
+                {
+                    if (sb.Length > 0) sb.Append(" and ");
+                    sb.Append("Surface");
+                }
+                sb.Append(" is not assigned.");
+                LogPainter.Warn(sb.ToString(), BColor.yellow, $"{name}.{nameof(SelfPositioner)}");
                 return;
             }
             ReadCache();

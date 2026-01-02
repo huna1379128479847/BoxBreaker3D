@@ -23,7 +23,7 @@ namespace BlockBreaker3D.Zenject
 
             public void Initialize()
             {
-                BDebug.Log($"ObjectInitializerInternal Initialize called. Objects count: {_objects.Count}, Comps count: {_comps.Count}", BDebug.BColor.green);
+                LogPainter.Debug($"ObjectInitializerInternal Initialize called. Objects count: {_objects.Count}, Comps count: {_comps.Count}", BColor.green);
                 foreach (var obj in _objects)
                 {
                     obj.Initialize();

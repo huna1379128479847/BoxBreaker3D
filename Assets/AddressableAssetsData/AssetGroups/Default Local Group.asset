@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: fa8750dcc65ee844e9913c6f87948252
   m_SerializeEntries:
+  - m_GUID: 1125c5b1e54868a42b3ebfeeb26a25b6
+    m_Address: Scene/Menu/StageSelect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2310e5cfce948694cb0ab5ca3f507f6c
     m_Address: Data/Sounds/BGM/prism
     m_ReadOnly: 0
@@ -55,6 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99c9720ab356a0642a771bea13969a05
+    m_Address: Scene/SampleScene
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b1887e279590669419824fdfc61cbac1
     m_Address: Scene/Title
     m_ReadOnly: 0
@@ -67,6 +77,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c57b299b76fda4f4fa41b6d03d242d4e
     m_Address: Shader/Glitch/Glitch_mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c60da7d1f84a9cb49974118b984023a8
+    m_Address: Scene/Boostrap
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

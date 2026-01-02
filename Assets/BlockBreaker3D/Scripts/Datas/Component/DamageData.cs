@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using BlockBreaker3D.Utils;
+using UnityEngine;
 
 namespace BlockBreaker3D.Datas.Component
 {
-    [CreateAssetMenu(fileName = "DamageData", menuName = "BlockBreaker3D/Component/DamageData")]
+    [CreateAssetMenu(fileName = "DamageData", menuName = ScriptablePref.CompMenuNamePref + "DamageData")]
     public class DamageData : CompData
     {
         public int Value = 1;

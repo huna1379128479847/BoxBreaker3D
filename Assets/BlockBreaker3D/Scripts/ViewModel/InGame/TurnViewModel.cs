@@ -9,7 +9,7 @@ using BlockBreaker3D.Datas;
 
 namespace BlockBreaker3D.ViewModel
 {
-    public class TurnViewModel : ViewModelBase, IInitializable
+    public class TurnViewModel : ViewModelBase, ITickable
     {
         private readonly GameDataHolder _holder;
         private readonly IBallTurnService _service;

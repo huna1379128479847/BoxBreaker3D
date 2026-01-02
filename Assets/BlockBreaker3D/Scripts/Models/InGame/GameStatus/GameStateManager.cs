@@ -41,7 +41,7 @@ namespace BlockBreaker3D.Models.InGame
             _signalBus.GetStream<GameSignal>()
                 .Subscribe(signal =>
                 {
-                    BDebug.Log($"Received GameSignal:{signal.SignalType.ToString().ColorText(BDebug.BColor.green)}", BDebug.BColor.yellow, nameof(GameStateManager));
+                    LogPainter.Debug($"Received GameSignal:{signal.SignalType.ToString().Paint(BColor.green)}", BColor.yellow, nameof(GameStateManager));
                     switch (signal.SignalType)
                     {
                         case GameSignal.Type.BlocksAllCleared:

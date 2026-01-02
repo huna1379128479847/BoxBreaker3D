@@ -50,7 +50,7 @@ namespace BlockBreaker3D.Utils.Graphic
         /// </summary>
         public static void SetStrength(ProcessType type, float strength = 1f)
         {
-            if (!BDebug.Assert(IsLoadedMaterial(type), $"{type} material is not loaded"))
+            if (!LogPainter.Assert(IsLoadedMaterial(type), $"{type} material is not loaded"))
                 return;
 
             var v = ProcessStrength(type, strength);
@@ -63,7 +63,7 @@ namespace BlockBreaker3D.Utils.Graphic
         /// </summary>
         public static async UniTask Fade(ProcessType type, float from, float to, float duration, Ease ease, CancellationToken token = default)
         {
-            if (!BDebug.Assert(IsLoadedMaterial(type), $"{type} material is not loaded"))
+            if (!LogPainter.Assert(IsLoadedMaterial(type), $"{type} material is not loaded"))
                 return;
 
             // 既存Tweenがあれば潰す（重複制御）
@@ -102,13 +102,13 @@ namespace BlockBreaker3D.Utils.Graphic
             if (IsLoadedMaterial(type))
                 return;
 
-            if (!BDebug.Assert(TypeToAddress.ContainsKey(type), $"Address not found for {type}"))
+            if (!LogPainter.Assert(TypeToAddress.ContainsKey(type), $"Address not found for {type}"))
                 return;
 
             var mat = await Addressables.LoadAssetAsync<Material>(TypeToAddress[type]);
 
             // 念のため null ガード
-            if (!BDebug.Assert(mat != null, $"Failed to load material for {type}"))
+            if (!LogPainter.Assert(mat != null, $"Failed to load material for {type}"))
                 return;
 
             Cache[type] = mat;

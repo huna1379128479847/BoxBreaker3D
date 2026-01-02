@@ -10,7 +10,7 @@ namespace BlockBreaker3D.Datas
         public override void InstallBindings()
         {
             Container.Bind<Button>().WithId("GoMenu").FromInstance(_button).AsCached();
-            Container.Bind<LoadSystemConnector>().AsSingle().NonLazy();
+            Container.Bind<TitleButtons>().AsSingle().NonLazy();
         }
     }
 }

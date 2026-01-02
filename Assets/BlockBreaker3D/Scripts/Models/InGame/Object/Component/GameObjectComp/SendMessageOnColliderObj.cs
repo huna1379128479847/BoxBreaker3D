@@ -20,7 +20,7 @@ namespace BlockBreaker3D.Models.InGame.Component.GameObjectComp
             {
                 if (otherObject.ObjectType.HasAny(_target))
                 {
-                    BDebug.Log($"SendMessageOnColliderObj: TargetObjectType={_target}, Message={_message}", BDebug.BColor.cyan);
+                    LogPainter.Debug($"SendMessageOnColliderObj: TargetObjectType={_target}, Message={_message}", BColor.cyan);
                     otherObject.FireMessage(_message);
                 }
             }

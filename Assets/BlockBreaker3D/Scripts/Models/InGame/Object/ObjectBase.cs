@@ -211,7 +211,7 @@ namespace BlockBreaker3D.Models.InGame
 
         public void Initialize()
         {
-            //BDebug.Log($"[{name}] Initialize called.", BDebug.BColor.green);
+            //BDebug.Log($"[{name}] Initialize called.", BColor.green);
             if (_holder == null)
             {
                 Debug.LogError($"[{name}] GameDataHolder is not set. Please ensure it is injected via SetGameDataHolder before Start.");
